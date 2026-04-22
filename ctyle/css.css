@@ -1,0 +1,44 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    background-image: url(fon4.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.hedder{
+    margin: 30px;
+}
+a{
+    height: auto;
+    width: 200px;
+    border: 3px solid  #998b7e;;
+}
+
+.center{
+    height: 100%;
+    width: 100%;
+}
+
+.row {
+    height: 60%;
+    width: 50%;
+    padding: 20px;
+}
+.col-6{
+    font-family: "Stalinist One";
+    border-color: #998b7e;
+}
+h1{
+    font-family: "Stalinist One";
+}
+.custom-hover {
+    transition: all 0.3s ease;
+}
+
+.custom-hover:hover {
+    background-color: #998b7e;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* более глубокая тень */
+}
+
