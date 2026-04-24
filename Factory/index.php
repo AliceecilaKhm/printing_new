@@ -3,6 +3,13 @@ require_once __DIR__ . '/../config.php';
 
 $sql = 'SELECT * FROM factory';
 $factory = [];
+$factory_deleted = isset($_GET['filter']) ? (int)$_GET['filter'] : 0;
+
+if ($factory_deleted == 0) {
+    $sql .= " WHERE factory.is_deleted = 0";
+} elseif ($factory_deleted == 1) {
+    $sql .= " WHERE factory.is_deleted = 1";
+}
 
 $prepare = mysqli_prepare($conn, $sql);
 
@@ -35,12 +42,17 @@ while ($row = mysqli_fetch_assoc($result)) {
     <link href="\printing\ctyle\css_factory.css" rel="stylesheet">
     <title>Factory</title>
 </head>
-<body class = "container-fluid">
-<div class = "table">
-    <h2> Привет </h2>
-    <table>
+<body class = "container-fluid bg-light">
+<div class="container mt-4"">
+    <a href="?filter=0" class="btn btn-success btn-sm">Активные</a>
+    <a href="?filter=1" class="btn btn-warning btn-sm">Удаленные</a>
+    <a href="?filter=2" class="btn btn-secondary btn-sm">Все записи</a>
+    <a href="add.php" class="btn btn-primary btn-sm float-end">Добавить заказ</a>
+    <a href="../index.php" class="btn btn-outline-secondary btn-sm float-end me-2">На главную</a>
+<div>
+    <h2> Цеха </h2>
+    <table class="table">
         <thead>
-        Фабрика
         <tr>
             <th> ID </th>
             <th> Адрес</th>
@@ -49,6 +61,10 @@ while ($row = mysqli_fetch_assoc($result)) {
             <th> Фамилия</th>
             <th> Отчество </th>
             <th> Контактные данные </th>
+            <th> Удалено </th>
+            <th>  </th>
+            <th>  </th>
+
         </tr>
         </thead>
         <tbody>
@@ -61,6 +77,14 @@ while ($row = mysqli_fetch_assoc($result)) {
             <td> <?php echo htmlspecialchars($value['FactoryHeadSName'])  ?> </td>
             <td> <?php echo htmlspecialchars($value['FactoryHeadLName'])  ?> </td>
             <td> <?php echo htmlspecialchars($value['Contacts'])  ?> </td>
+            <td> <?php if ($value['is_deleted'] == 0): ?>
+           <span class="badge bg-success"> нет</span>
+                <?php else: ?>
+                <span class="badge bg-success"> Да </span>
+                <?php endif; ?>
+            </td>
+            <td><a href="edit.php?id=<?php echo (int)$value['id']; ?>" class="btn btn-sm btn-primary">Редактировать</a>  </td>
+            <td><a href="delete.php?id=<?php echo (int)$value['id']; ?>" class="btn btn-danger btn-sm">Удалить</a>  </td>
         </tr>
         <?php endforeach; ?>
         </tbody>

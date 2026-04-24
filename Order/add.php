@@ -5,7 +5,7 @@ $errorMessage = '';
 $contract_id = (int)($_POST['contract_id'] ?? 0);
 $product_id = (int)($_POST['product_id'] ?? 0);
 $Quantity = (int)($_POST['Quantity'] ?? 0);
-$status = (string)($_POST['status'] ?? 0);
+$status = (string)($_POST['status'] ?? '');
 $status_order = [
     'В обработке',
     'Принят в работу',
@@ -14,7 +14,7 @@ $status_order = [
     'Выдан'];
 $order_number = [];
 $products = [];
-$parce_order_number = mysqli_prepare($conn, "SELECT id from contract");
+$parce_order_number = mysqli_prepare($conn, "SELECT id from contract WHERE is_deleted = 0");
 if ($parce_order_number) {
     mysqli_stmt_execute($parce_order_number);
     $result = mysqli_stmt_get_result($parce_order_number);
@@ -32,7 +32,7 @@ if ($parce_order_number) {
     }
 
 
-$prepare_products = mysqli_prepare($conn, "SELECT id, name FROM product");
+$prepare_products = mysqli_prepare($conn, "SELECT id, name FROM product WHERE is_deleted = 0");
 if ($prepare_products) {
     mysqli_stmt_execute($prepare_products);
     $result = mysqli_stmt_get_result($prepare_products);
@@ -52,17 +52,35 @@ else{
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $errorMessage === '') {
-    $prepare_add = mysqli_prepare($conn, "Insert into orders (contract_id, product_id, Quantity, status) values (?, ?, ?, ?)");
-    if ($prepare_add) {
-        mysqli_stmt_bind_param($prepare_add, 'iiis', $contract_id, $product_id, $Quantity, $status);
-        mysqli_stmt_execute($prepare_add);
+    if (empty($contract_id)) {
+        $errorMessage = "Выберите контракт";
+    } elseif (empty($product_id)) {
+        $errorMessage = "Выберите продукт";
+    } elseif ($Quantity <= 0) {
+        $errorMessage = "Количество должно быть больше 0";
+    } elseif (empty($status)) {
+        $errorMessage = "Выберите статус";
+    } else {
+        $prepare_add = mysqli_prepare($conn, "Insert into orders (contract_id, product_id, Quantity, status) values (?, ?, ?, ?)");
+        if ($prepare_add) {
+            mysqli_stmt_bind_param($prepare_add, 'iiis', $contract_id, $product_id, $Quantity, $status);
 
-    }
-    if (mysqli_stmt_execute($prepare_add)) {
-        header('Location: index.php');
-        exit;
+
+            if (mysqli_stmt_execute($prepare_add)) {
+                mysqli_stmt_close($prepare_add);
+                header('Location: index.php');
+                exit;
+            } else {
+                $errorMessage = "Ошибка добавления: " . mysqli_error($conn);
+            }
+            mysqli_stmt_close($prepare_add);
+        }
+        else {
+            $errorMessage = "Ошибка подготовки запроса: " . mysqli_error($conn);
+        }
     }
 }
+
 ?>
 
 
@@ -76,16 +94,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $errorMessage === '') {
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    <link href="" rel="stylesheet">
+    <link href="\printing\ctyle\css_factory.css" rel="stylesheet">
     <title>Factory</title>
 </head>
 <body class = "container-fluid">
 <div class = " ">
-    <h2> Добавить заказ </h2>
+
     <form method="post">
-        <div class="">
+        <div class="container mt-5">
+            <h2> Добавить заказ </h2>
+            <?php if ($errorMessage): ?>
+                <div class="alert alert-danger">
+                    <strong>Ошибка!</strong> <?php echo htmlspecialchars($errorMessage); ?>
+                </div>
+            <?php endif; ?>
             <div>
-            <label for="contract_id" class="">Номер контракта </label>
+            <label for="contract_id" class="form-label">Номер контракта </label>
             <select name="contract_id">
              <option value="">Выберите контракт</option>
                 <?php foreach ($order_number as $item): ?>

@@ -9,24 +9,27 @@ if ($id <= 0) {
 }
 
 
-$factory = [];
-$prepare = mysqli_prepare($conn, "SELECT id, Name FROM factory WHERE id = ?");
+$order
+    = [];
+$prepare = mysqli_prepare($conn, "SELECT id FROM orders WHERE id = ?");
 if ($prepare) {
     mysqli_stmt_bind_param($prepare, 'i', $id);
     mysqli_stmt_execute($prepare);
     $result = mysqli_stmt_get_result($prepare);
-    $factory = mysqli_fetch_assoc($result);
+    $order
+        = mysqli_fetch_assoc($result);
     mysqli_stmt_close($prepare);
 }
 
-if (!$factory) {
+if (!$order
+) {
     header('Location: index.php');
     exit;
 }
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm'])) {
-    $prepare_delete = mysqli_prepare($conn, "UPDATE factory SET is_deleted = 1 WHERE id = ?");
+    $prepare_delete = mysqli_prepare($conn, "UPDATE orders SET is_deleted = 1 WHERE id = ?");
     if ($prepare_delete) {
         mysqli_stmt_bind_param($prepare_delete, 'i', $id);
         mysqli_stmt_execute($prepare_delete);
@@ -59,7 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel'])) {
             </div>
             <div class="card-body text-center">
                 <p>Вы действительно хотите удалить продукт?</p>
-                <p class="fw-bold text-danger">「 <?php echo htmlspecialchars($factory['Name']); ?> 」</p>
+                <p class="fw-bold text-danger">「 <?php echo htmlspecialchars($order
+                    ['id']); ?> 」</p>
                 <form method="POST" class="d-flex gap-2 justify-content-center">
                     <button type="submit" name="confirm" class="btn btn-danger">Да, удалить</button>
                     <button type="submit" name="cancel" class="btn btn-secondary">Отмена</button>
@@ -70,3 +74,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel'])) {
 </div>
 </body>
 </html>
+

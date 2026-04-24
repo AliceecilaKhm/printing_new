@@ -4,7 +4,7 @@ $enPath = __DIR__ . '/.env';
 if (!file_exists($enPath)) {
     die("Файл не найден");
 }
-else echo "Привет БД";
+
 
 $env = parse_ini_file($enPath);
 $host = isset($env['DB_HOST']) ? $env['DB_HOST'] : 'localhost';

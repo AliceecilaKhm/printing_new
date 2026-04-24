@@ -21,22 +21,16 @@ require_once __DIR__ . '/config.php';
 <div class="container center d-flex justify-content-left">
     <div class="row ">
         <div class="col-6 d-flex justify-content-center align-items-center">
-            <a class="btn shadow as border border-4 border-dark custom-hover" href="/Factory/index.php">Цех</a>
+            <a class="btn shadow as border border-4 border-dark custom-hover" href="Factory/index.php">Цех</a>
         </div>
         <div class="col-6 d-flex justify-content-center align-items-center">
-            <a class="btn shadow as border border-4 border-dark custom-hover" href="/Products/index.php">Продукция</a>
+            <a class="btn shadow as border border-4 border-dark custom-hover" href="Products/index.php">Продукция</a>
         </div>
         <div class="col-6 d-flex justify-content-center align-items-center">
-            <a class="btn shadow as border border-4 border-dark custom-hover" href="/Order/index.php">Заказ</a>
+            <a class="btn shadow as border border-4 border-dark custom-hover" href="Order/index.php">Заказ</a>
         </div>
         <div class="col-6 d-flex justify-content-center align-items-center">
-            <a class="btn shadow as border border-4 border-dark custom-hover" >Договор</a>
-        </div>
-        <div class="col-6 d-flex justify-content-center align-items-center">
-            <a class="btn shadow as border border-4 border-dark custom-hover" >Клиент</a>
-        </div>
-        <div class="col-6 d-flex justify-content-center align-items-center">
-            <a class="btn shadow as border border-4 border-dark custom-hover" >Отчет</a>
+            <a class="btn shadow as border border-4 border-dark custom-hover" href="report.php" >Отчет</a>
         </div>
 
 </div>

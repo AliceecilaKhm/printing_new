@@ -1,8 +1,8 @@
 html, body {
     height: 100%;
     width: 100%;
-    background-image: url(fon.jpg);
+    background-image: url(img.png);
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
+    background-repeat: repeat;
 }

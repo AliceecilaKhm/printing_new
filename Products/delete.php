@@ -7,26 +7,24 @@ if ($id <= 0) {
     header('Location: index.php');
     exit;
 }
-
-
-$factory = [];
-$prepare = mysqli_prepare($conn, "SELECT id, Name FROM factory WHERE id = ?");
+$product = [];
+$prepare = mysqli_prepare($conn, "SELECT id, name FROM product WHERE id = ?");
 if ($prepare) {
     mysqli_stmt_bind_param($prepare, 'i', $id);
     mysqli_stmt_execute($prepare);
     $result = mysqli_stmt_get_result($prepare);
-    $factory = mysqli_fetch_assoc($result);
+    $product = mysqli_fetch_assoc($result);
     mysqli_stmt_close($prepare);
 }
 
-if (!$factory) {
+if (!$product) {
     header('Location: index.php');
     exit;
 }
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm'])) {
-    $prepare_delete = mysqli_prepare($conn, "UPDATE factory SET is_deleted = 1 WHERE id = ?");
+    $prepare_delete = mysqli_prepare($conn, "UPDATE product SET is_deleted = 1 WHERE id = ?");
     if ($prepare_delete) {
         mysqli_stmt_bind_param($prepare_delete, 'i', $id);
         mysqli_stmt_execute($prepare_delete);
@@ -49,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel'])) {
     <meta charset="UTF-8">
     <title>Удаление продукта</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="\printing\ctyle\css_factory.css" rel="stylesheet">
 </head>
 <body class="container mt-5">
 <div class="row justify-content-center">
@@ -59,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel'])) {
             </div>
             <div class="card-body text-center">
                 <p>Вы действительно хотите удалить продукт?</p>
-                <p class="fw-bold text-danger">「 <?php echo htmlspecialchars($factory['Name']); ?> 」</p>
+                <p class="fw-bold text-danger">「 <?php echo htmlspecialchars($product['name']); ?> 」</p>
                 <form method="POST" class="d-flex gap-2 justify-content-center">
                     <button type="submit" name="confirm" class="btn btn-danger">Да, удалить</button>
                     <button type="submit" name="cancel" class="btn btn-secondary">Отмена</button>
